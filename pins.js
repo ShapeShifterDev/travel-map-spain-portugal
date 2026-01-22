@@ -136,6 +136,14 @@
     // label: string (optional label shown under pin; e.g., "Start", "End")
     // start: boolean (optional; applies .pin.start styling)
 
+    addCityPin(map, {
+       lng: 2.1686,
+       lat: 41.3874,
+       city: 'Barcelona',
+       nights: 5,
+       label: 'Start / End'
+    });
+
     // ---- EXAMPLES ----
 
     // Example PRIMARY pin (shows nights number inside the circle)
