@@ -184,5 +184,5 @@
   });
 
   // If you want to reuse addCityPin from other files later, you can expose it:
-  // window.addCityPin = addCityPin;
+  window.addCityPin = addCityPin;
 })();
