@@ -145,7 +145,7 @@
     });
 
     addCityPin(map, {
-       lng: -90.7346,
+       lng: -0.3763,
        lat: 39.4699,
        city: 'València',
        nights: 4
