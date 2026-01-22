@@ -332,6 +332,15 @@
       //   iconSize: TRAIN_ICON.iconSize,
       //   iconOffsetPx: TRAIN_ICON.iconOffsetPx
       // }
+
+      {
+         id: 'bcn_to_val',
+         from: [2.1686, 41.3874],
+         to: [-0.3763, 39.4699],
+         fromRadius: R_PRIMARY,
+         toRadius: R_PRIMARY,
+         showIcon: true,
+      }
     ];
 
     function updateTrainRoutes() {
