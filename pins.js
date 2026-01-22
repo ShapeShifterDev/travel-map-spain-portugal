@@ -144,6 +144,97 @@
        label: 'Start / End'
     });
 
+    addCityPin(map, {
+       lng: -90.7346,
+       lat: 39.4699,
+       city: 'València',
+       nights: 4
+    });
+
+    addCityPin(map, {
+       lng: -3.7038,
+       lat: 40.4168,
+       city: 'Madrid',
+       nights: 5
+    })
+
+    addCityPin(map, {
+       lng: -4.0273,
+       lat: 39.8628,
+       city: 'Toledo',
+       small: true
+    })
+
+    addCityPin(map, {
+       lng: -4.1184,
+       lat: 40.9429,
+       city: 'Segovia',
+       small: true
+    })
+
+    addCityPin(map, {
+       lng: -4.7794,
+       lat: 37.8882,
+       city: 'Córdoba',
+       small: true
+    })
+
+    addCityPin(map, {
+       lng: -5.9845,
+       lat: 37.3891,
+       city: 'Sevilla',
+       nights: 3
+    })
+
+    addCityPin(map, {
+       lng: -3.5986,
+       lat: 37.1773,
+       city: 'Granada',
+       nights: 2 
+    })
+
+    addCityPin(map, {
+       lng: -9.1393,
+       lat: 38.7223,
+       city: 'Lisbon',
+       nights: 2
+    })
+
+    addCityPin(map, {
+       lng: -8.6291,
+       lat: 41.1579,
+       city: 'Porto',
+       nights: 2
+    })
+
+    addCityPin(map, {
+       lng: -8.5448,
+       lat: 42.8782,
+       city: 'Santiago de Compostela',
+       nights: 1
+    })
+
+    addCityPin(map, {
+       lng: -5.8494,
+       lat: 43.3619,
+       city: 'Oviedo',
+       nights: 1
+    })
+
+    addCityPin(map, {
+       lng: -2.9349,
+       lat: 43.2630,
+       city: 'Bilbao',
+       nights: 2
+    })
+
+    addCityPin(map, {
+       lng: -1.9812,
+       lat: 43.3183,
+       city: 'San Sebastián',
+       nights: 3
+    })
+
     // ---- EXAMPLES ----
 
     // Example PRIMARY pin (shows nights number inside the circle)
