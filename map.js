@@ -16,7 +16,7 @@
 
       // ---- INITIAL VIEW ----
       // center format: [longitude, latitude]
-      center: [4.3971, 40.3619],
+      center: [-4.0, 40.0],
 
       // zoom: number (decimals allowed). 2 = World view. 5 = Regional view. 10 = City view
       zoom: 5.5
