@@ -16,10 +16,10 @@
 
       // ---- INITIAL VIEW ----
       // center format: [longitude, latitude]
-      center: [0, 20],
+      center: [40.3736, 4.2097],
 
       // zoom: number (decimals allowed). 2 = World view. 5 = Regional view. 10 = City view
-      zoom: 2
+      zoom: 5
     });
 
     // Standard map UI controls
