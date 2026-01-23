@@ -296,6 +296,16 @@
          toRadius: R_PRIMARY,
          iconType: 'plane',             // choose icon
          showIcon: true,                // set false for line only
+      },
+
+      {
+         id: 'san_to_barc',
+         from: [-1.9812, 43.3183],  
+         to: [2.1686, 41.3874],        
+         fromRadius: R_PRIMARY,
+         toRadius: R_PRIMARY,
+         iconType: 'plane',             // choose icon
+         showIcon: true,                // set false for line only
       }
     ];
 
