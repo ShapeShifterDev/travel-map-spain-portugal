@@ -118,29 +118,48 @@
   }
 
   async function loadSvgAsMapImage(map, id, svgUrl, pixelRatio = 2) {
-    if (map.hasImage(id)) return;
+  if (map.hasImage(id)) return;
 
-    const svgText = await fetch(svgUrl, { cache: 'no-store' }).then(r => {
-      if (!r.ok) throw new Error(`Failed to load ${svgUrl}: ${r.status}`);
-      return r.text();
-    });
+  const svgText = await fetch(svgUrl, { cache: 'no-store' }).then(r => {
+    if (!r.ok) throw new Error(`Failed to load ${svgUrl}: ${r.status}`);
+    return r.text();
+  });
 
-    const blob = new Blob([svgText], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
+  const blob = new Blob([svgText], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
 
-    const img = new Image();
-    img.decoding = 'async';
-    img.src = url;
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
 
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-    });
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+  });
 
-    URL.revokeObjectURL(url);
+  URL.revokeObjectURL(url);
 
-    map.addImage(id, img, { pixelRatio });
-  }
+  // Some SVGs report naturalWidth/Height as 0.
+  // Rasterize to a canvas with a safe default size.
+  const w = (img.naturalWidth && img.naturalWidth > 0) ? img.naturalWidth : 256;
+  const h = (img.naturalHeight && img.naturalHeight > 0) ? img.naturalHeight : 256;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const imageData = ctx.getImageData(0, 0, w, h);
+
+  map.addImage(
+    id,
+    { width: w, height: h, data: imageData.data },
+    { pixelRatio }
+  );
+}
 
   // Build train route features: base line + optional icon.
   // Ties are rendered via a line pattern overlay (see layers below).
@@ -199,32 +218,32 @@
   // Create a small canvas "tie" pattern and add it as a line pattern image.
   // We then render ties using a second line layer with line-pattern, and control spacing via line-width/zoom.
   function addTiePattern(map) {
-    if (map.hasImage('train-tie-pattern')) return;
+  if (map.hasImage('train-tie-pattern')) return;
 
-    // Pattern canvas: draws a short vertical dash centered.
-    // This will be stamped along the line by `line-pattern`.
-    const size = 16;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
+  const size = 16;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
 
-    const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
 
-    // Transparent background
-    ctx.clearRect(0, 0, size, size);
+  // Centered short "tie" dash
+  ctx.strokeStyle = 'rgba(47,158,111,0.95)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(size / 2, 4);
+  ctx.lineTo(size / 2, size - 4);
+  ctx.stroke();
 
-    // Draw a centered "tie" dash (vertical). Rotation is handled by line direction (pattern follows line).
-    // The apparent perpendicular effect comes from how the pattern is designed and repeated.
-    // (For truly perpendicular, we'd need many small segments; this is the lightweight pattern approach.)
-    ctx.strokeStyle = 'rgba(47,158,111,0.95)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(size / 2, 4);
-    ctx.lineTo(size / 2, size - 4);
-    ctx.stroke();
+  const imageData = ctx.getImageData(0, 0, size, size);
 
-    map.addImage('train-tie-pattern', canvas, { pixelRatio: 2 });
-  }
+  map.addImage(
+    'train-tie-pattern',
+    { width: size, height: size, data: imageData.data },
+    { pixelRatio: 2 }
+  );
+}
 
   window.addEventListener('travelMap:ready', async (e) => {
     const map = e.detail.map;
