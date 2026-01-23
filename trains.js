@@ -313,10 +313,33 @@
     // ---- ROUTE DEFINITIONS ----
     // Format for points: [longitude, latitude]
     const routes = [
+       // EXAMPLE:
+      // {
+      //   id: 'example_train_route',
+      //   from: [-79.5199, 8.9824],
+      //   to: [-79.3835, 9.0714],
+      //   fromRadius: R_PRIMARY,
+      //   toRadius: R_SECONDARY,
+      //   showIcon: true,
+      //
+      //   // Optional overrides:
+      //   iconSize: TRAIN_ICON.iconSize,
+      //   iconOffsetPx: TRAIN_ICON.iconOffsetPx
+      // }, <- Add comma for more routes
+      
       {
         id: 'bcn_to_val',
-        from: [2.1686, 41.3874],        // Barcelona
-        to: [-0.3763, 39.4699],         // Valencia
+        from: [2.1686, 41.3874],        
+        to: [-0.3763, 39.4699],         
+        fromRadius: R_PRIMARY,
+        toRadius: R_PRIMARY,
+        showIcon: true
+      },
+
+      {
+        id: 'val_to_mad',
+        from: [-0.3763, 39.4699],        
+        to: [-3.7038, 40.4168],         
         fromRadius: R_PRIMARY,
         toRadius: R_PRIMARY,
         showIcon: true
