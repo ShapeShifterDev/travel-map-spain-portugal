@@ -287,6 +287,31 @@
     // - iconOffsetPx: number (perpendicular offset; positive/negative flips side)
     
     const routes = [
+
+      {
+         id: 'port_to_sant',
+         from: [-8.6291, 41.1579],
+         to: [-8.5448, 42.8782],
+         fromRadius: R_PRIMARY,
+         toRadius: R_PRIMARY,
+      },
+
+      {
+         id: 'sant_to_ov',
+         from: [-8.5448, 42.8782],
+         to: [-5.8494, 43.3619],
+         fromRadius: R_PRIMARY,
+         toRadius: R_PRIMARY,
+      },
+
+      {
+         id: 'ov_to_bilb',
+         from: [-5.8494, 43.3619],
+         to: [-2.9349, 43.2630],
+         fromRadius: R_PRIMARY,
+         toRadius: R_PRIMARY,
+      }
+      
       // EXAMPLE: primary -> primary (shows car icon)
       // {
       //   id: 'antigua_to_panajachel',
