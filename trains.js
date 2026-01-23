@@ -1,12 +1,15 @@
+// trains.js
 // Train routes only.
 // - Uses the gentler curve settings from planeroutes.js / boatroutes.js
-// - Solid base line + overlay of short PERPENDICULAR dashes at regular intervals ("rail ties")
-// - Dash/tie density scales with zoom to avoid visual noise when zoomed out
+// - Solid base line + overlay of short dashes (rail ties) via a line-pattern
+// - Tie density/visibility scales with zoom to avoid visual noise when zoomed out
 // - Uses a single icon: ./icons/train.svg
+//
 // Expects:
 // - maplibregl loaded
 // - map.js dispatches "travelMap:ready" with { map }
 // - icons/train.svg exists
+//
 // Notes:
 // - Assumes pins are bottom-anchored and pin radii match pins.js styles.
 // - Add routes by pushing to `routes` array.
@@ -37,25 +40,6 @@
     minZoom: 0,                // set to e.g. 8.0 to hide until zoomed in
     iconRotateOffsetDeg: 0,    // adjust if train.svg faces wrong direction
     iconOffsetPx: 12           // perpendicular offset from line at midpoint; sign flips side
-  };
-
-  // ---- "TIE" (perpendicular dash) SETTINGS ----
-  // These are evaluated in pixels and scaled by zoom using expressions below.
-  const TIES = {
-    // Spacing between ties along the path (pixels). We will scale this with zoom.
-    // Larger => fewer ties.
-    spacingPxAtZ2: 120,   // when zoomed out (z~2), fewer ties to avoid noise
-    spacingPxAtZ10: 45,   // when zoomed in (z~10), more ties
-
-    // Tie length in pixels (perpendicular to track). Also scaled with zoom.
-    lengthPxAtZ2: 6,
-    lengthPxAtZ10: 14,
-
-    // Tie thickness (line width). Also scaled with zoom.
-    widthAtZ2: 1,
-    widthAtZ10: 2,
-
-    opacity: 0.75
   };
 
   // ---------- Geometry helpers ----------
@@ -117,52 +101,78 @@
     return coords;
   }
 
+  // Rasterize SVG to pixel data to avoid MapLibre "mismatched image size" errors
   async function loadSvgAsMapImage(map, id, svgUrl, pixelRatio = 2) {
-  if (map.hasImage(id)) return;
+    if (map.hasImage(id)) return;
 
-  const svgText = await fetch(svgUrl, { cache: 'no-store' }).then(r => {
-    if (!r.ok) throw new Error(`Failed to load ${svgUrl}: ${r.status}`);
-    return r.text();
-  });
+    const svgText = await fetch(svgUrl, { cache: 'no-store' }).then(r => {
+      if (!r.ok) throw new Error(`Failed to load ${svgUrl}: ${r.status}`);
+      return r.text();
+    });
 
-  const blob = new Blob([svgText], { type: 'image/svg+xml' });
-  const url = URL.createObjectURL(blob);
+    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
 
-  const img = new Image();
-  img.decoding = 'async';
-  img.src = url;
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = url;
 
-  await new Promise((resolve, reject) => {
-    img.onload = resolve;
-    img.onerror = reject;
-  });
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+    });
 
-  URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
 
-  // Some SVGs report naturalWidth/Height as 0.
-  // Rasterize to a canvas with a safe default size.
-  const w = (img.naturalWidth && img.naturalWidth > 0) ? img.naturalWidth : 256;
-  const h = (img.naturalHeight && img.naturalHeight > 0) ? img.naturalHeight : 256;
+    const w = (img.naturalWidth && img.naturalWidth > 0) ? img.naturalWidth : 256;
+    const h = (img.naturalHeight && img.naturalHeight > 0) ? img.naturalHeight : 256;
 
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
 
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, w, h);
-  ctx.drawImage(img, 0, 0, w, h);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
 
-  const imageData = ctx.getImageData(0, 0, w, h);
+    const imageData = ctx.getImageData(0, 0, w, h);
 
-  map.addImage(
-    id,
-    { width: w, height: h, data: imageData.data },
-    { pixelRatio }
-  );
-}
+    map.addImage(
+      id,
+      { width: w, height: h, data: imageData.data },
+      { pixelRatio }
+    );
+  }
 
-  // Build train route features: base line + optional icon.
-  // Ties are rendered via a line pattern overlay (see layers below).
+  // Add a high-contrast tie pattern for the overlay (white strokes on green base line)
+  function addTiePattern(map) {
+    if (map.hasImage('train-tie-pattern')) return;
+
+    const size = 16;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, size, size);
+
+    // Centered short "tie" dash (high contrast)
+    ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(size / 2, 3);
+    ctx.lineTo(size / 2, size - 3);
+    ctx.stroke();
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+
+    map.addImage(
+      'train-tie-pattern',
+      { width: size, height: size, data: imageData.data },
+      { pixelRatio: 2 }
+    );
+  }
+
   function buildTrainRouteFeatures(map, route, routeId) {
     const [startLL, endLL] = trimToCircleEdges(map, route.from, route.to, route.fromRadius, route.toRadius);
 
@@ -215,36 +225,6 @@
     return [lineFeature, iconFeature];
   }
 
-  // Create a small canvas "tie" pattern and add it as a line pattern image.
-  // We then render ties using a second line layer with line-pattern, and control spacing via line-width/zoom.
-  function addTiePattern(map) {
-  if (map.hasImage('train-tie-pattern')) return;
-
-  const size = 16;
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, size, size);
-
-  // Centered short "tie" dash
-  ctx.strokeStyle = 'rgba(47,158,111,0.95)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(size / 2, 4);
-  ctx.lineTo(size / 2, size - 4);
-  ctx.stroke();
-
-  const imageData = ctx.getImageData(0, 0, size, size);
-
-  map.addImage(
-    'train-tie-pattern',
-    { width: size, height: size, data: imageData.data },
-    { pixelRatio: 2 }
-  );
-}
-
   window.addEventListener('travelMap:ready', async (e) => {
     const map = e.detail.map;
 
@@ -276,39 +256,35 @@
       });
     }
 
-    // Tie overlay line-pattern
-    // To reduce noise at small zoom, we reduce opacity and increase "effective spacing"
-    // by reducing line width (pattern repeats less aggressively) while zoomed out.
+    // Tie overlay
     if (!map.getLayer('train-route-ties')) {
       map.addLayer({
         id: 'train-route-ties',
         type: 'line',
         source: 'trainRoutes',
         filter: ['==', ['get', 'kind'], 'train-line'],
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'butt'
-        },
+        layout: { 'line-join': 'round', 'line-cap': 'butt' },
         paint: {
           'line-pattern': 'train-tie-pattern',
 
-          // We scale tie thickness (pattern rendering) with zoom
+          // Wider overlay so pattern is readable (and scales with zoom)
           'line-width': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            2, TIES.widthAtZ2,
-            10, TIES.widthAtZ10
+            2, 4,
+            6, 6,
+            10, 8
           ],
 
-          // Fade ties at low zoom to avoid noise
+          // Fade in with zoom to avoid noise when zoomed out
           'line-opacity': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            2, 0.25,
-            6, 0.55,
-            10, TIES.opacity
+            2, 0.15,
+            6, 0.5,
+            10, 0.9
           ]
         }
       });
@@ -335,30 +311,15 @@
     }
 
     // ---- ROUTE DEFINITIONS ----
-    // Add train routes by pushing objects into this array.
     // Format for points: [longitude, latitude]
     const routes = [
-      // EXAMPLE:
-      // {
-      //   id: 'example_train_route',
-      //   from: [-79.5199, 8.9824],
-      //   to: [-79.3835, 9.0714],
-      //   fromRadius: R_PRIMARY,
-      //   toRadius: R_SECONDARY,
-      //   showIcon: true,
-      //
-      //   // Optional overrides:
-      //   iconSize: TRAIN_ICON.iconSize,
-      //   iconOffsetPx: TRAIN_ICON.iconOffsetPx
-      // }
-
       {
-         id: 'bcn_to_val',
-         from: [2.1686, 41.3874],
-         to: [-0.3763, 39.4699],
-         fromRadius: R_PRIMARY,
-         toRadius: R_PRIMARY,
-         showIcon: true,
+        id: 'bcn_to_val',
+        from: [2.1686, 41.3874],        // Barcelona
+        to: [-0.3763, 39.4699],         // Valencia
+        fromRadius: R_PRIMARY,
+        toRadius: R_PRIMARY,
+        showIcon: true
       }
     ];
 
