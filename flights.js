@@ -287,6 +287,16 @@
       //   iconSize: PLANE_ICON.iconSize,
       //   iconOffsetPx: PLANE_ICON.iconOffsetPx
       // }
+
+      {
+         id: 'sev_to_lisb',
+         from: [-5.9845, 37.3891],  
+         to: [-9.1393, 38.7223],        
+         fromRadius: R_PRIMARY,
+         toRadius: R_PRIMARY,
+         iconType: 'plane',             // choose icon
+         showIcon: true,                // set false for line only
+      }
     ];
 
     function updatePlaneRoutes() {
