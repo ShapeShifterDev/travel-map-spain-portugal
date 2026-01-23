@@ -343,6 +343,51 @@
         fromRadius: R_PRIMARY,
         toRadius: R_PRIMARY,
         showIcon: true
+      },
+
+      {
+        id: 'mad_to_gran',
+        from: [-3.7038, 40.4168],        
+        to: [-3.5986, 37.1773],         
+        fromRadius: R_PRIMARY,
+        toRadius: R_PRIMARY,
+        showIcon: true
+      },
+
+      {
+        id: 'gran_to_cord',
+        from: [-3.5986, 37.1773],        
+        to: [-4.7794, 37.8882],         
+        fromRadius: R_PRIMARY,
+        toRadius: R_SECONDARY,
+        showIcon: true
+      },
+
+      {
+        id: 'cord_to_sev',
+        from: [-4.7794, 37.8882],        
+        to: [-5.9845, 37.3891],         
+        fromRadius: R_SECONDARY,
+        toRadius: R_PRIMARY,
+        showIcon: true
+      },
+
+      {
+        id: 'lisb_to_port',
+        from: [-9.1393, 38.7223],        
+        to: [-8.6291, 41.1579],         
+        fromRadius: R_PRIMARY,
+        toRadius: R_PRIMARY,
+        showIcon: true
+      },
+
+      {
+        id: 'bilb_to_sans',
+        from: [-2.9349, 43.2630],        
+        to: [-1.9812, 43.3183],         
+        fromRadius: R_PRIMARY,
+        toRadius: R_PRIMARY,
+        showIcon: false
       }
     ];
 
