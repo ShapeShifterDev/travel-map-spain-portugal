@@ -25,11 +25,46 @@
     // Standard map UI controls
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-    map.on('load', () => {
-      window.dispatchEvent(
-        new CustomEvent('travelMap:ready', { detail: { map } })
-      );
-    });
+    map.on('load', async () => {
+
+    // ---- OPTIONAL COUNTRY HIGHLIGHT OVERLAY ----
+    // Drop a file named "custom.geo.json" next to map.js to enable.
+    // Remove the file if no country highlighting is desired.
+
+    const GEOJSON_URL = './custom.geo.json';
+
+    try {
+      const res = await fetch(GEOJSON_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`GeoJSON HTTP ${res.status}`);
+
+      const geojson = await res.json();
+
+      map.addSource('tripCountries', {
+        type: 'geojson',
+        data: geojson
+      });
+
+      // Soft fill only (no borders)
+      map.addLayer({
+        id: 'tripCountries-fill',
+        type: 'fill',
+        source: 'tripCountries',
+        paint: {
+          'fill-color': 'rgba(159, 216, 181, 0.25)',
+          'fill-opacity': 1
+        }
+      });
+
+    } catch (err) {
+      // Silent failure is intentional: map still works without the file
+      console.info('No custom.geo.json loaded (this is OK):', err.message);
+    }
+
+    // Notify other modules that the map is ready
+    window.dispatchEvent(
+      new CustomEvent('travelMap:ready', { detail: { map } })
+    );
+  });
   }
 
   if (document.readyState === 'loading') {
