@@ -36,14 +36,14 @@
   // ---- ICON SETTINGS (adjust these) ----
   const CAR_ICON = {
     // icon-size: number. Larger = bigger icon.
-    iconSize: 3.5,
+    iconSize: 1,
 
     // minzoom: number. Car icon won't show until user zooms in past this.
-    minZoom: 8.0,
+    minZoom: 0,
 
     // iconRotateOffsetDeg: degrees added to computed direction.
     // Use this to fix SVG orientation (e.g., if SVG points "up" by default). Chose -90, 0, 90, 180 for event orientation changes. 
-    iconRotateOffsetDeg: 180,
+    iconRotateOffsetDeg: 0,
 
     // iconOffsetPx: perpendicular offset from the line at midpoint.
     // Positive vs negative flips which side of the line the icon sits on.
