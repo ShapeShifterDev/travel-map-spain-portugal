@@ -287,7 +287,24 @@
     // - iconOffsetPx: number (perpendicular offset; positive/negative flips side)
     
     const routes = [
+      {
+         id: 'mad_to_seg',
+         from: [-3.7038, 40.4168],
+         to: [-4.1184, 40.9429],
+         fromRadius: R_PRIMARY,
+         toRadius: R_SECONDARY,
+         showCarIcon: false,
+      },
 
+      {
+         id: 'mad_to_tol',
+         from: [-4.0273, 40.4168],
+         to: [-8.5448, 39.8628],
+         fromRadius: R_PRIMARY,
+         toRadius: R_SECONDARY,
+         showCarIcon: false,
+      },
+      
       {
          id: 'port_to_sant',
          from: [-8.6291, 41.1579],
