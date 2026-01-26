@@ -36,7 +36,7 @@
   // ---- ICON SETTINGS (adjust these) ----
   const CAR_ICON = {
     // icon-size: number. Larger = bigger icon.
-    iconSize: 0.5,
+    iconSize: 0.45,
 
     // minzoom: number. Car icon won't show until user zooms in past this.
     minZoom: 0,
@@ -47,7 +47,7 @@
 
     // iconOffsetPx: perpendicular offset from the line at midpoint.
     // Positive vs negative flips which side of the line the icon sits on.
-    iconOffsetPx: 12
+    iconOffsetPx: -12
   };
 
   // ---------- Geometry helpers ----------
