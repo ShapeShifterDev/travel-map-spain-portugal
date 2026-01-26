@@ -51,7 +51,7 @@
         source: 'tripCountries',
         paint: {
           'fill-color': 'rgba(255, 232, 163, 1)',
-          'fill-opacity': 1
+          'fill-opacity': 0.25
         }
       });
 
