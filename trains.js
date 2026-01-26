@@ -36,10 +36,10 @@
 
   // ---- TRAIN ICON SETTINGS (adjust these) ----
   const TRAIN_ICON = {
-    iconSize: 3.0,
+    iconSize: 0.45,
     minZoom: 0,                // set to e.g. 8.0 to hide until zoomed in
     iconRotateOffsetDeg: 0,    // adjust if train.svg faces wrong direction
-    iconOffsetPx: 12           // perpendicular offset from line at midpoint; sign flips side
+    iconOffsetPx: -12           // perpendicular offset from line at midpoint; sign flips side
   };
 
   // ---------- Geometry helpers ----------
