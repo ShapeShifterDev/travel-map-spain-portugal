@@ -298,8 +298,8 @@
 
       {
          id: 'mad_to_tol',
-         from: [-4.0273, 40.4168],
-         to: [-8.5448, 39.8628],
+         from: [-3.7038, 40.4168],
+         to: [-4.0273, 39.8628],
          fromRadius: R_PRIMARY,
          toRadius: R_SECONDARY,
          showCarIcon: false,
