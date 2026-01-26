@@ -36,7 +36,7 @@
   // ---- ICON SETTINGS (adjust these) ----
   const CAR_ICON = {
     // icon-size: number. Larger = bigger icon.
-    iconSize: 1,
+    iconSize: 0.5,
 
     // minzoom: number. Car icon won't show until user zooms in past this.
     minZoom: 0,
