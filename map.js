@@ -50,7 +50,7 @@
         type: 'fill',
         source: 'tripCountries',
         paint: {
-          'fill-color': 'rgba(159, 216, 181, 0.25)',
+          'fill-color': 'rgba(255, 232, 163, 1)',
           'fill-opacity': 1
         }
       });
