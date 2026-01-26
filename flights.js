@@ -39,7 +39,7 @@
   const PLANE_ICON = {
     // Default icon size for plane markers.
     // You can override per-route by setting route.iconSize.
-    iconSize: 2.2,
+    iconSize: 0.45,
 
     // If you want icons to appear only when zoomed in:
     minZoom: 0, // set to e.g. 8.0 to hide until zoomed in
